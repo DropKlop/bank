@@ -35,16 +35,16 @@ async def register_user(user_data: User):
         return {"status": "OK", "new_data": user}
 
 
-@router.delete("/del_user", description="удаление пользователя по ид")
+@router.delete("", description="удаление пользователя по ид")
 async def delete_user(user_id: int):
     pass
 
 
-@router.put("/put_user", description="полное обновление пользователя")
+@router.put("", description="полное обновление пользователя")
 async def put_user(user_data: User):
     pass
 
 
-@router.patch("/patch_user", description="частичное обновление пользователя")
+@router.patch("", description="частичное обновление пользователя")
 async def patch_user(user_data: User):
     pass
