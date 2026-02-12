@@ -14,3 +14,7 @@ class UserPatch(BaseModel):
     email: EmailStr | None = Field(None)
     full_name: str | None = Field(None)
     password: str | None = Field(None)
+
+class UserAuth(BaseModel):
+    email: EmailStr
+    password: str
