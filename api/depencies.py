@@ -1,9 +1,17 @@
 from typing import Annotated
 
+from pydantic import BaseModel
+
 from db_manager import DBManager
-from fastapi import Depends
+from fastapi import Depends, Query
 
 from database import async_session
+
+class PaginationParams(BaseModel):
+    page: Annotated[int | None, Query(1, ge=1)]
+    per_page: Annotated[int | None, Query(3, ge=1)]
+
+PaginationDep = Annotated[PaginationParams, Depends()]
 
 
 def get_db_manager():
