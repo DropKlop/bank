@@ -1,6 +1,16 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 
 
-class User(BaseModel):
-    email: str | None
-    full_name: str | None
+
+class UserAdd(BaseModel):
+    email: EmailStr
+    full_name: str
+    password: str
+
+class User(UserAdd):
+    id: int
+
+class UserPatch(BaseModel):
+    email: EmailStr | None = Field(None)
+    full_name: str | None = Field(None)
+    password: str | None = Field(None)
