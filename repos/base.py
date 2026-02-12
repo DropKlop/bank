@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 
 
 class BaseRepository:
@@ -8,13 +8,18 @@ class BaseRepository:
     def __init__(self, session):
         self.session = session
 
-    async def get_one_or_none(self):
-        query = select(self.model)
+    async def get_one_or_none(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
         res = await self.session.execute(query)
         return res.scalars().one_or_none()
 
-    async def get_filtered(self, *filter, **filter_by):
-        query = select(self.model).filter(*filter).filter_by(**filter_by)
+    async def get_one(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
+        res = await self.session.execute(query)
+        return res.scalars().one()
+
+    async def get_filtered(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
         res = await self.session.execute(query)
         return res.scalars().all()
 
@@ -26,3 +31,10 @@ class BaseRepository:
         res = await self.session.execute(query)
         return res.scalars().one()
 
+    async def delete_data(self, **filter_by):
+        query = delete(self.model).filter_by(**filter_by)
+        await self.session.execute(query)
+
+    async def update_data(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
+        query = update(self.model).filter_by(**filter_by).values(**data.model_dump(exclude_unset=exclude_unset))
+        await self.session.execute(query)
