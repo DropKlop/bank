@@ -13,14 +13,11 @@ class PaginationParams(BaseModel):
 
 PaginationDep = Annotated[PaginationParams, Depends()]
 
-
 def get_db_manager():
     return DBManager(session_factory=async_session)
-
 
 async def get_db():
     async with get_db_manager() as db:
         yield db
-
 
 DBDep = Annotated[DBManager, Depends(get_db)]

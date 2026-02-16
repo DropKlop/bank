@@ -1,4 +1,4 @@
-from repos.users_repos import UsersRepository
+from repos.users_repos import UsersRepository, UsersRoleRepository
 
 
 
@@ -8,9 +8,8 @@ class DBManager:
 
     async def __aenter__(self):
         self.session = self.session_factory()
-
         self.user = UsersRepository(self.session)
-
+        self.user_role = UsersRoleRepository(self.session)
         return self
 
     async def __aexit__(self, *args):
