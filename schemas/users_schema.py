@@ -18,3 +18,10 @@ class UserPatch(BaseModel):
 class UserAuth(BaseModel):
     email: EmailStr
     password: str
+
+class UserWithRoleAdd(BaseModel):
+    user_id: int
+    role: str
+
+class UserWithRole(UserWithRoleAdd):
+    id: int

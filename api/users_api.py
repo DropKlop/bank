@@ -1,38 +1,47 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Response
 
-from schemas.users_schema import UserAdd, UserPatch
+from schemas.users_schema import UserAdd, UserPatch, UserAuth
 from api.depencies import DBDep, PaginationDep
 from services.user_service import UserService
 
 router = APIRouter(prefix="/user", tags=["Пользователь"])
 
 
+
+
 @router.get("/me", description="получить информацию о себе")
 async def get_about_user(db: DBDep):
-    try:
-        return await UserService(db).get_me()
-    except:
-        raise HTTPException(status_code=404, detail="user not found")
-
-
-@router.post("/auth")
-async def auth_user():
     pass
+    #try:
+        #return await UserService(db).get_me()
+    #except:
+       # raise HTTPException(status_code=404, detail="user not found")
+
+
+@router.post("/register", description="регистрация нового пользователя")
+async def register_user(user_data: UserAdd, db: DBDep):
+    data = await UserService(db).register_user(user_data)
+    return {"status": "OK", "data": data}
+
+
+@router.post("/auth", description="Аутентификация пользователя по почте и паролю")
+async def auth_user(user_data: UserAuth, db: DBDep, response: Response):
+    user = await UserService(db).auth_user(user_data, response)
+    return {"status":"OK", "data": user}
+
+
+@router.post("/logout", description="Выход из сессии")
+async def logout(response: Response):
+    await UserService().logout(response)
+    return {"status":"OK"}
 
 
 @router.get("", description="получить всех пользователей")
 async def get_all_users(pagination: PaginationDep, db: DBDep):
     per_page = pagination.per_page
     page = per_page * (pagination.page - 1)
-    return await UserService(db).get_all(limit=per_page, offset=page)
-
-
-@router.post("/register", description="регистрация нового пользователя")
-async def register_user(user_data: UserAdd, db: DBDep):
-    try:
-        return await UserService(db).insert_data(data=user_data)
-    except Exception as e:
-        return {"data": e}
+    data = await UserService(db).get_all(limit=per_page, offset=page)
+    return {"status": "OK", "data": data}
 
 
 @router.delete("", description="удаление пользователя по айди")
