@@ -19,3 +19,12 @@ class UserRoleOrm(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     role: Mapped[str]
+
+
+class BankAccountOrm(Base):
+    __tablename__ = "banks_account"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str]
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    amount: Mapped[int]
